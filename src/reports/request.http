@@ -1,0 +1,50 @@
+### ADD Report 
+
+POST http://localhost:5000/reports
+Content-Type: application/json
+
+{
+    "resume" : "report10",
+    "notes" : [
+        {"id" : "8d9192d4-b0d5-43ee-9bc5-fddedadd1a78"},
+        {"id" : "8d9192d4-b0d5-43ee-9bc5-fddedadd1a78"}
+        
+    ]
+}
+
+### Get All Notes
+
+
+GET http://localhost:5000/reports
+
+
+### Update Report 
+
+PATCH  http://localhost:5000/reports/873e24a3-7fc4-4c2c-9b6a-5577e7fa1d08
+Content-Type: application/json
+
+{
+    "resume" : "new Report",
+    "notesDeFrais" : [
+        {"id" : "5512ce14-b9a2-4c2c-9073-baad9a374c61"},
+        {"id" : "23b651a2-a5e2-442e-8cfa-a3b41413dbb2"},
+        {"id" : "48524a12-dff5-4cf6-b0aa-4c2f20871c6b"}
+        
+    ]
+}
+
+### Update Report
+
+DELETE  http://localhost:5000/reports/873e24a3-7fc4-4c2c-9b6a-5577e7fa1d08
+
+### Get Report
+
+GET  http://localhost:5000/reports/62016065-45fd-4e4d-95a4-73bf4215e45b
+
+### Get Report
+
+GET  http://localhost:5000/reports/notes
+
+### Get Report
+
+GET  http://localhost:5000/reports?filter=55

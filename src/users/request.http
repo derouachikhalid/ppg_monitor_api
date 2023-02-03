@@ -1,0 +1,49 @@
+### get One User 
+
+POST  http://localhost:5000/auth/signup
+Content-Type: application/json
+
+{
+    "email" : "Kamali07@gmail.com",
+    "password" : "kamal1010"
+}
+
+### signin into 
+
+POST  http://localhost:5000/auth/signin
+Content-Type: application/json
+
+{
+    "email" : "hayat2007@gmail.com",
+    "password" : "hayat1010"
+}
+
+### Get One User
+GET  http://localhost:3000/auth/1
+
+
+### Get All User
+
+GET  http://localhost:3000/auth
+
+### Delete User
+
+
+### Get All User
+
+GET  http://localhost:5000/auth?role=emp
+
+### Delete User
+
+
+DELETE  http://localhost:3000/auth/5
+ 
+
+### Update User
+
+PATCH  http://localhost:3000/auth/1
+Content-Type: application/json
+
+{
+    "password" :  "Jamal"
+}

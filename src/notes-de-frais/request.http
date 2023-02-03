@@ -1,0 +1,34 @@
+#### post notes de frais 
+
+POST http://localhost:5000/notes-de-frais
+Content-Type: application/json
+
+{
+    "description" : "repas7",
+    "unit_price" : 200 ,
+    "quantity" : 2 ,
+    "state" : true,
+    "category": 2
+}
+
+#### post notes de frais 
+
+PATCH  http://localhost:5000/notes-de-frais/6091b3fa-f472-4b64-b941-365e76590f69
+Content-Type: application/json
+
+{
+    "description" : "Khalid desc",
+    "unit_price" : 500 ,
+    "quantity" : 2 ,
+    "state" : true,
+    "category": "2"
+}
+
+### Get All Notes
+
+
+GET http://localhost:5000/notes-de-frais?limit=1&offset=0
+
+### Get All Columns
+
+GET http://localhost:5000/notes-de-frais/columns
