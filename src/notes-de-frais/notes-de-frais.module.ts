@@ -3,11 +3,29 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotesDeFraisController } from './notes-de-frais.controller';
 import { NotesDeFraisService } from './notes-de-frais.service';
 import {NodesDeFrais} from './notes-de-frais.entity'
-import { CategorieModule } from './categorie/categories.module';
-import { CategorieService } from './categorie/categories.service';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  imports : [ TypeOrmModule.forFeature([NodesDeFrais]), CategorieModule ],
+  imports : [
+     TypeOrmModule.forFeature([NodesDeFrais]),
+    MailerModule.forRoot({
+      transport : {
+        service: 'gmail',
+                port:465,
+                secure: true, // true for 465, false for other ports
+                logger: true,
+                debug: true,
+        auth : {
+          user : 'ppgmonitor@gmail.com',
+          pass : 'lzgdynmexohtrpaz'
+        },
+        tls:{
+          rejectUnauthorized:true
+      }
+      }
+    }),
+  UsersModule],
   controllers: [NotesDeFraisController],
   providers: [NotesDeFraisService],
   exports:[NotesDeFraisService]

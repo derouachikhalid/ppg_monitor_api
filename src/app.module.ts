@@ -8,7 +8,6 @@ import { User } from './users/user.entity';
 import { Report } from './reports/Report.entity';
 import { NotesDeFraisModule } from './notes-de-frais/notes-de-frais.module';
 import { NodesDeFrais } from './notes-de-frais/notes-de-frais.entity';
-import { Category } from './notes-de-frais/categorie/categories.entity';
 
 @Module({
   imports: [
@@ -19,7 +18,7 @@ import { Category } from './notes-de-frais/categorie/categories.entity';
       username: "root",
       password: "",
       database: "t2s_notes_db",
-      entities:[User,Report,NodesDeFrais,Category],
+      entities:[User,Report,NodesDeFrais],
       synchronize : true,
     }) ,
     UsersModule, 

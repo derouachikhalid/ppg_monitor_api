@@ -1,65 +1,104 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable ,NotFoundException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
-import { CategorieService } from './categorie/categories.service';
-import {NodesDeFrais, NoteState} from './notes-de-frais.entity'
+import {NodesDeFrais} from './notes-de-frais.entity'
+import { MailerService } from '@nestjs-modules/mailer';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class NotesDeFraisService {
 
     constructor(
-        @InjectRepository(NodesDeFrais) private repo : Repository<NodesDeFrais>,
-        private catService : CategorieService
+        @InjectRepository(NodesDeFrais) private repo : Repository<NodesDeFrais>,private readonly mailerservice : MailerService, private userService : UsersService
     ){}
 
 async createNoteFrais(attrbs : Partial<NodesDeFrais>){
     
-      if(attrbs.category.id !== null){
-          const category = await this.catService.findCategory(attrbs.category.id);
-          attrbs.category = category;
-      }
-      console.log(attrbs)
+    
+    console.log(attrbs)
     const note = await  this.repo.create(attrbs);
     return this.repo.save(note);
    }
 
 async getNote(id){
-    const note =await this.repo.findOne({
-        where : {
-            id
-        },
+    
+    let note =await this.repo.findOne({
+        where : {id},
             relations : {
-                category : true
+                patient : true
             }});
-    return note;
+
+    
+    return {
+        ...note,
+        ppgRed : this.arrayStoN(note.ppgRed),
+        ppgInfraRed : this.arrayStoN(note.ppgInfraRed)
+    };
 
 }
 
-async getNotes(id){
-    const notes =await this.repo.find({
-        where : id});
+
+arrayStoN(stringArr) {
+    
+    var output = stringArr.replace("[","").replace("]","");
+    
+    output = output.split(",");
+    
+    return output = output.map(kha=>Number(kha));
+}
+
+async getNotes(){
+    const notes = await this.repo.find({
+        relations : {
+            patient : true
+        }});
     return notes;
 
 }
 
-async updateNote(id : number,attrbs : Partial<NodesDeFrais>){
+async updateNote(id : string,attrbs : Partial<NodesDeFrais>){
     if(Object.keys(attrbs).length === 0){
         throw new BadRequestException('There is no way to modify')
     }
-    const note =await this.repo.findOneBy({id} );
-    if(attrbs.category.unit_price){
-        attrbs.unit_price = attrbs.category.unit_price;
-    }
-    if(attrbs.category.id){
-        const category = await this.catService.findCategory(attrbs.category.id);
-        attrbs.category = category;
-    }
-
-    
+    const note =await this.repo.findOne({where : {id},relations : {patient : true}});
     Object.assign(note,attrbs)
-    console.log(note)
-    return this.repo.save(note);
+    const ppg =await this.repo.save(note);
+    //const crnt = await this.userService.findOne(authId);
+    console.log(ppg)
+    const subject = `Rapport du Diagnostic [${new Date(ppg.createdAt).toDateString()}]`;
+    const html = `
+    <p>       Bonjour ${ppg.patient.sexe==='man' ? 'monsieur' : 'madame' } <b>${ppg.patient.familyName}</b>,</p>
+    <hr/>
+    <p> Votre rapport du diagnostic pour l'enregistrement <b>${ppg.id}</b>, enregistré le <b>${new Date(ppg.createdAt).toDateString()}</b> est disponible sur
+    l'application mobile <b>"PPG Monitor"</b>.</p>
+    <hr/>
+    <p> Cordialement. </p>
+    `;
 
+
+    return await this.sendMail(ppg.patient.email,subject,'',html);
+    
+
+}
+
+async sendMail(to,subject,text,html,from='ppgmonitor@gmail.com',){
+    this.mailerservice.sendMail({
+        to,
+        from,
+        subject,
+        text,
+        html
+    })
+    
+
+}
+
+async remove(id : string) {
+    const user = await this.repo.findOne({where : {id}})
+    if(!user){
+      throw new NotFoundException()
+    }
+    return this.repo.softDelete(id);
 }
 
 async getColumns(){
@@ -67,23 +106,12 @@ async getColumns(){
     console.log(fields)
 }
 
-async findAll(submit){
+async findAll(){
 
-    if(submit==="false"){
-        const fetchedNote = await this.repo.find({
-            where :{
-                state : NoteState.A_SOUMETTRE
-            },
-            relations : {
-                category : true
-            }
-        });
-        return fetchedNote;
+    let fetchedNote = await this.repo.find({
 
-    }
-    const fetchedNote = await this.repo.find({
         relations : {
-            category : true
+            patient : true
         }
     });
     
@@ -94,12 +122,8 @@ async findAll(submit){
 async findNotes(report){
     
     const notes = await this.repo.find({
-        where : {
-            report
-        },
-        relations : {
-            report:true
-        }
+        where : {},
+        relations : {}
     });
     return notes;
 }

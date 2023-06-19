@@ -4,8 +4,12 @@ POST  http://localhost:5000/auth/signup
 Content-Type: application/json
 
 {
-    "email" : "Kamali07@gmail.com",
-    "password" : "kamal1010"
+    "email" : "derouachi80@gmail.com",
+    "password" : "derouachi1998",
+    "phone" : "0645264051",
+    "adresse" : "15, settat, morrocco",
+    "firstName" : "Khalid",
+    "familyName" : "derouachi"
 }
 
 ### signin into 
@@ -14,17 +18,17 @@ POST  http://localhost:5000/auth/signin
 Content-Type: application/json
 
 {
-    "email" : "hayat2007@gmail.com",
-    "password" : "hayat1010"
+    "email" : "derouachi80@gmail.com",
+    "password" : "derouachi1998"
 }
 
 ### Get One User
-GET  http://localhost:3000/auth/1
+GET  http://localhost:5000/auth/1
 
 
 ### Get All User
 
-GET  http://localhost:3000/auth
+GET  http://localhost:5000/auth
 
 ### Delete User
 

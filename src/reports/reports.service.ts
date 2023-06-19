@@ -50,7 +50,7 @@ export class ReportsService {
    
 
    async findOne(id){
-    const report = await this.repo.findOne({ where : {id} ,relations :{notesDeFrais : true , owner :true} });
+    const report = await this.repo.findOne({ where : {id} ,relations :{ } });
     return report;
    }
 
@@ -67,10 +67,7 @@ export class ReportsService {
    async findAll(){
     
     const reports =await  this.repo.find({
-        relations: {
-            notesDeFrais: true,
-            owner: true
-        },
+        relations: {},
     });
 
     return reports;

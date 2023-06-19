@@ -1,5 +1,4 @@
-import { Controller, Post, Body, Get, Param, Patch, Query } from '@nestjs/common';
-import { CategorieService } from './categorie/categories.service';
+import { Controller, Post, Body, Get, Param, Patch, Session, Delete } from '@nestjs/common';
 import { NodesDeFrais } from './notes-de-frais.entity';
 import { NotesDeFraisService } from './notes-de-frais.service';
 
@@ -7,18 +6,12 @@ import { NotesDeFraisService } from './notes-de-frais.service';
 export class NotesDeFraisController {
 
     constructor(
-        private notesDeFraisService : NotesDeFraisService,
-        private categoryServices : CategorieService){}
+        private notesDeFraisService : NotesDeFraisService){}
 
     @Post()
     async createNote(@Body() body : Partial<NodesDeFrais> ){
-        body.id = undefined;
+        return this.notesDeFraisService.createNoteFrais(body);
         
-         if (body.description && body.description !== "" ){
-             return this.notesDeFraisService.createNoteFrais(body)
-         }
-        
-
     }
 
     @Get('/:id')
@@ -27,24 +20,25 @@ export class NotesDeFraisController {
     }
 
     @Patch('/:id')
-    updateNote(@Param('id') id : number,@Body() body : any){
+    updateNote(@Session() session : any,@Param('id') id : string,@Body() body : any){
 
         
         return this.notesDeFraisService.updateNote(id,body);
 
     }
 
-    @Get()
-    getNotes(@Query('submit') submit : string){
-        
-        return this.notesDeFraisService.findAll(submit);
+    @Delete('/:id')
+    deleteNote(@Param('id') id : string){
+        return this.notesDeFraisService.remove(id);
 
     }
 
-    @Get("/columns")
-    getColumns(){
 
+
+    @Get()
+    getNotes(){
         
-        return this.notesDeFraisService.getColumns();
+        return this.notesDeFraisService.findAll();
+
     }
 }

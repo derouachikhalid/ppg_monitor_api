@@ -13,6 +13,7 @@ export class UsersService {
    async create(body){
     const newUser = new User();
     Object.assign(newUser,body);
+    console.log(body)
     const user = await this.repo.save(newUser);
     return this.buildResponse(user);
     
@@ -60,12 +61,12 @@ export class UsersService {
       case "admin":
         userRole = UserRole.ADMIN
         break;
-      case "resp":
-        userRole = UserRole.RESP
+      case "doctor":
+        userRole = UserRole.DOCTOR
         break;
     
       default:
-        userRole = UserRole.EMPLOYEE
+        userRole = UserRole.PROFESSOR
         break;
     }
 

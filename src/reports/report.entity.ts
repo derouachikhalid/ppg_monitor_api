@@ -48,12 +48,4 @@ export class Report {
     @DeleteDateColumn({nullable:true})
     deletedAt: Date;
 
-    @OneToMany(() => NodesDeFrais , (notes)=> notes.report)
-    @JoinColumn()
-    notesDeFrais: NodesDeFrais[]
-
-    @ManyToOne(() => User , (owner)=> owner.ownerReports)
-    @JoinColumn()
-    owner: User
-
 }

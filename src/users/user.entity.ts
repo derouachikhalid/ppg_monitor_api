@@ -4,8 +4,14 @@ import { NodesDeFrais } from 'src/notes-de-frais/notes-de-frais.entity';
 import { Report } from 'src/reports/Report.entity';
 export enum UserRole {
     ADMIN = "admin",
-    RESP = "responsable",
-    EMPLOYEE = "employee",
+    DOCTOR = "doctor",
+    PATIENT = "patient",
+    PROFESSOR = "Professor",
+}
+
+export enum Sexe {
+    MAN = "man",
+    WOMAN = "woman",
 }
 
 @Entity()
@@ -17,6 +23,12 @@ export class User {
     @Column()
     email : string;
 
+    @Column()
+    phone : string;
+
+    @Column()
+    adresse : string;
+
     
     @Column()
     password : string
@@ -24,12 +36,34 @@ export class User {
     @Column({nullable : true})
     firstName : string
 
+    @Column({nullable : true})
+    secondName : string
+
+    @Column({nullable : true})
+    familyName : string
+
+    @Column()
+    birthDay : Date
+
+    @Column()
+    birthPlace : String
+
+    @Column({
+        type: "enum",
+        enum: Sexe,
+        default: Sexe.MAN,
+    })
+    sexe : Sexe
+
     @Column({
         type: "enum",
         enum: UserRole,
-        default: UserRole.EMPLOYEE,
+        default: UserRole.PATIENT,
     })
     role : UserRole
+
+    @OneToMany(() => NodesDeFrais, (note) => note.patient)
+    ppgSignals: NodesDeFrais[];
 
     @Column("simple-array")
     tokens: string[]
@@ -40,14 +74,6 @@ export class User {
     @UpdateDateColumn()
     updatedAt : Date
 
-    
-    @OneToMany(() => NodesDeFrais , (notes)=> notes.user)
-    @JoinColumn()
-    notesDeFrais: NodesDeFrais[]
-
-    @OneToMany(() => Report , (report)=> report.owner)
-    @JoinColumn()
-    ownerReports: Report[]
 
     @DeleteDateColumn()
     deletedAt : Date
